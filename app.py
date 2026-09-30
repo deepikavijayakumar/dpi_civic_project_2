@@ -1,4 +1,4 @@
-import streamlit as st
+impimport streamlit as st
 from streamlit_mic_recorder import mic_recorder
 
 st.title("Citizen Grievance Portal")
@@ -33,4 +33,5 @@ if st.button("Submit Complaint"):
     if not text_complaint and not audio_data and not image_file:
         st.warning("Please provide a complaint via text, voice, or image.")
     else:
+        st.success(f"Complaint registered successfully in {selected_lang_name}!")
         st.success(f"Complaint registered successfully in {selected_lang_name}!")
