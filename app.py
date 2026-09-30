@@ -3,16 +3,23 @@ from streamlit_mic_recorder import mic_recorder
 
 st.title("Citizen Grievance Portal")
 
-# 1. BRICS Language Selector
-brics_languages = {
+# 1. Expanded Language Selector (Including Indian Languages)
+languages = {
     "English": "en",
-    "Hindi (भारत)": "hi",
+    "Tamil (தமிழ்)": "ta",
+    "Hindi (हिंदी)": "hi",
+    "Telugu (తెలుగు)": "te",
+    "Kannada (ಕನ್ನಡ)": "kn",
+    "Malayalam (മലയാളം)": "ml",
+    "Marathi (मराठी)": "mr",
+    "Bengali (বাংলা)": "bn",
     "Portuguese (Brasil)": "pt",
     "Russian (Россия)": "ru",
     "Chinese (中国)": "zh"
 }
-selected_lang_name = st.selectbox("Select Language / भाषा चुनें / Idioma / Язык / 语言", list(brics_languages.keys()))
-lang_code = brics_languages[selected_lang_name]
+
+selected_lang_name = st.selectbox("Select Language / மொழியைத் தேர்ந்தெடுக்கவும் / भाषा चुनें", list(languages.keys()))
+lang_code = languages[selected_lang_name]
 
 # 2. Text Input
 text_complaint = st.text_area(f"Enter your complaint ({selected_lang_name}):")
@@ -33,5 +40,4 @@ if st.button("Submit Complaint"):
     if not text_complaint and not audio_data and not image_file:
         st.warning("Please provide a complaint via text, voice, or image.")
     else:
-        st.success(f"Complaint registered successfully in {selected_lang_name}!")
         st.success(f"Complaint registered successfully in {selected_lang_name}!")
