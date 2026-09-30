@@ -46,8 +46,7 @@ if app_mode == "Citizen Portal":
         else:
             # AI Analysis Simulation (Categorization, Urgency & Summarization)
             with st.spinner("🤖 AI is analyzing your multi-modal complaint..."):
-                # Basic rule-based AI simulation or hook it up to Gemini API here
-                content_lower = text_complaint.lower()
+                content_lower = text_complaint.lower() if text_complaint else ""
                 if "pothole" in content_lower or "road" in content_lower:
                     category = "Infrastructure / Roads"
                     urgency = "High"
@@ -97,4 +96,4 @@ elif app_mode == "Government Admin Dashboard":
                 st.write(f"**Description:** {comp['text']}")
                 st.write(f"**AI Assigned Category:** {comp['category']}")
                 st.write(f"**Urgency Level:** {comp['urgency']}")
-                st.write(f"**Status:** {comp['status']}") here!")
+                st.write(f"**Status:** {comp['status']}")
