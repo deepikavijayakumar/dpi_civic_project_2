@@ -1,4 +1,4 @@
-impimport streamlit as st
+import streamlit as st
 from streamlit_mic_recorder import mic_recorder
 
 st.title("Citizen Grievance Portal")
