@@ -44,7 +44,7 @@ if app_mode == "Citizen Portal":
         if not text_complaint and not audio_data and not image_file:
             st.warning("Please provide a complaint via text, voice, or image.")
         else:
-            # AI Analysis Simulation (Categorization, Urgency & Summarization)
+            # AI Analysis Simulation
             with st.spinner("🤖 AI is analyzing your multi-modal complaint..."):
                 content_lower = text_complaint.lower() if text_complaint else ""
                 if "pothole" in content_lower or "road" in content_lower:
@@ -60,7 +60,7 @@ if app_mode == "Citizen Portal":
                     category = "General Civic Issue"
                     urgency = "Low"
 
-            # Save to session state so Admin Dashboard can see it
+            # Save to session state
             new_complaint = {
                 "language": selected_lang_name,
                 "text": text_complaint if text_complaint else "[Voice/Image Submission]",
@@ -80,10 +80,15 @@ elif app_mode == "Government Admin Dashboard":
     
     total_count = len(st.session_state.complaints)
     
+    # Calculate live metrics based on updated statuses
+    resolved_count = sum(1 for c in st.session_state.complaints if c['status'] == "Resolved")
+    pending_count = sum(1 for c in st.session_state.complaints if c['status'] == "Pending Review")
+    in_progress_count = sum(1 for c in st.session_state.complaints if c['status'] == "In Progress")
+
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Complaints", total_count)
-    col2.metric("Resolved", "0")
-    col3.metric("Pending Review", total_count)
+    col2.metric("Resolved", resolved_count)
+    col3.metric("Pending Review", pending_count)
 
     st.subheader("Live AI-Processed Complaints Feed")
     
@@ -91,9 +96,24 @@ elif app_mode == "Government Admin Dashboard":
         st.warning("No complaints submitted yet. Go to the Citizen Portal, submit a complaint, and see the AI analysis appear here instantly!")
     else:
         for idx, comp in enumerate(st.session_state.complaints):
-            with st.expander(f"Complaint #{idx+1} - {comp['category']} ({comp['urgency']} Urgency)"):
+            with st.expander(f"Complaint #{idx+1} - {comp['category']} ({comp['urgency']} Urgency) - [{comp['status']}]"):
                 st.write(f"**Language:** {comp['language']}")
                 st.write(f"**Description:** {comp['text']}")
                 st.write(f"**AI Assigned Category:** {comp['category']}")
                 st.write(f"**Urgency Level:** {comp['urgency']}")
-                st.write(f"**Status:** {comp['status']}")
+                
+                # Interactive Status Updation Dropdown
+                status_options = ["Pending Review", "In Progress", "Resolved"]
+                current_index = status_options.index(comp['status']) if comp['status'] in status_options else 0
+                
+                new_status = st.selectbox(
+                    f"Update Status for Complaint #{idx+1}",
+                    status_options,
+                    index=current_index,
+                    key=f"status_select_{idx}"
+                )
+                
+                # Update status in session state if changed
+                if new_status != comp['status']:
+                    st.session_state.complaints[idx]['status'] = new_status
+                    st.rerun()
